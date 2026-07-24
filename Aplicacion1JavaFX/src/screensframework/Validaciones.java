@@ -44,7 +44,7 @@ public class Validaciones {
         
         if (!datos.isEmpty()) {
             if (!m.find()) {
-                JOptionPane.showMessageDialog(null, "La direccion de correo es correcta");
+                JOptionPane.showMessageDialog(null, "La direccion de correo es incorrecta");
                 return false;
             }
         }

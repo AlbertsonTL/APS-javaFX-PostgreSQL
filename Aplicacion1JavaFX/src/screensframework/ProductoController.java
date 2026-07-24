@@ -2,6 +2,7 @@ package screensframework;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -71,7 +72,7 @@ public class ProductoController implements Initializable, ControlledScreen {
             conexion = DBConnection.connect();
             
             // COMBOBOX DE CATEGORIA
-            String slqCategoria = "SELECT idcategoria, nombre_categoria FROM category";
+            String slqCategoria = "SELECT idcategoria, nombre_categoria FROM categoria";
             ResultSet resultadoCategoria = conexion.createStatement().executeQuery(slqCategoria);
             while(resultadoCategoria.next()) {
                 cbCategoriaProducto.getItems().add(resultadoCategoria.getString("nombre_categoria"));
@@ -127,7 +128,8 @@ public class ProductoController implements Initializable, ControlledScreen {
              * TABLE COLUMN ADDED DYNAMICALLY *
              **********************************/
             
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++ ) {
+            int totalColumnas = rs.getMetaData().getColumnCount();
+            for (int i = 0; i < totalColumnas; i++ ) {
                 final int j = i;
                 col = new TableColumn(titulos[i]);
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>(){                   
@@ -164,7 +166,7 @@ public class ProductoController implements Initializable, ControlledScreen {
             while(rs.next()){
                 //Iterate Row
                 ObservableList<String> row = FXCollections.observableArrayList();
-                for(int i = 1 ; i <= rs.getMetaData().getColumnCount()+1; i++){
+                for(int i = 1 ; i <= totalColumnas; i++){
                     //Iterate Column
                     row.add(rs.getString(i));
                 }
@@ -265,7 +267,7 @@ public class ProductoController implements Initializable, ControlledScreen {
         
         try {
             conexion = DBConnection.connect();
-            String sql = "INSERT INTO product "
+            String sql = "INSERT INTO producto "
                     + " (nombre_producto, precio, idcategoria, idmarca) "
                     + " VALUES (?, ?, ?, ?)";
             PreparedStatement estado = conexion.prepareStatement(sql);
@@ -340,7 +342,7 @@ public class ProductoController implements Initializable, ControlledScreen {
 
                 PreparedStatement estado = conexion.prepareStatement(sql);
 
-                estado.executeUpdate();
+                int n = estado.executeUpdate();
 
                 if (n > 0) {
                     tablaProducto.getColumns().clear();
